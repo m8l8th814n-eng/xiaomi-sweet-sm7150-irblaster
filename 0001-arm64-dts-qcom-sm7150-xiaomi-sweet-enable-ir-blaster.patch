@@ -1,0 +1,29 @@
+From: m8l8th814n-eng <m8l8th814n-eng@users.noreply.github.com>
+Subject: [PATCH] arm64: dts: qcom: sm7150-xiaomi-sweet: enable IR blaster
+
+Redmi Note 10 Pro has a consumer-IR transmitter LED wired to QUPv3 SE8 SPI
+(spi@a88000, mainline label spi8), matching downstream sweet-sdmmagpie.dtsi
+(&qupv3_se8_spi / irled@0). uart8 (same SE8) is already disabled on sweet, so
+the bus is free. Enable spi8 and add the ir-spi node -> /dev/lirc0 (ir-ctl).
+
+NOTE: the mainline ir-spi driver matches compatible "ir-spi-led", NOT "ir-spi".
+---
+--- a/arch/arm64/boot/dts/qcom/sm7150-xiaomi-sweet.dts
++++ b/arch/arm64/boot/dts/qcom/sm7150-xiaomi-sweet.dts
+@@ -276,6 +276,16 @@
+ 	};
+ };
+ 
++&spi8 {
++	status = "okay";
++
++	irled@0 {
++		compatible = "ir-spi-led";
++		reg = <0>;
++		spi-max-frequency = <19200000>;
++	};
++};
++
+ &uart8 {
+ 	status = "disabled";
+ };
